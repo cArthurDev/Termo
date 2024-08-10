@@ -258,7 +258,7 @@
   </div>
 
   <script>
-    const words = [
+   const words = [
       'AMIGO', 'CARRO', 'CASAS', 'FELIZ', 'TRABO', 'BOMBA', 'CALDO', 'CESTA', 'FOCAS', 'GOLPE',
       'HORAS', 'JOGAR', 'LAMPE', 'MUNDO', 'NOTAS', 'PASTA', 'QUERO', 'ROCHA', 'SALDO', 'TEMPO',
       'URANO', 'VALOR', 'XAMPU', 'ZEBRA', 'VINHO', 'RANCA', 'MACAS', 'ABRIR', 'CELTA', 'FATOR',
@@ -292,6 +292,7 @@
       'ALBA', 'CHAVE', 'DECO', 'FAIXA', 'GALE', 'MASTO', 'NUNCA', 'PERDE', 'QUANT', 'RATOS',
       'SANGR', 'TERRA', 'UNICO', 'VALOR', 'XAXIM', 'ZINCO',
     ];
+
     let word = words[Math.floor(Math.random() * words.length)];
     const maxAttempts = 5;
     let currentAttempt = 0;
@@ -383,7 +384,7 @@
           const keyValue = key.textContent;
           if (correctKeys.has(keyValue)) {
             key.classList.add('correct');
-          } else if (currentRow.includes(keyValue) && !correctKeys.has(keyValue)) {
+          } else if (!key.classList.contains('correct') && currentRow.includes(keyValue)) {
             key.classList.add('disabled');
           }
         }
