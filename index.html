@@ -8,7 +8,7 @@
   <style>
     body {
       background-color: #312d2d;
-      font-family: sans-serif;
+      font-family: 'Roboto Slab', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -41,7 +41,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Arial Black', sans-serif;
+      font-family: 'Roboto Slab', sans-serif;
       font-size: 36px;
       font-weight: 900;
       color: white;
@@ -49,12 +49,12 @@
     }
 
     .tile.correct {
-      background-color: #12a454; 
+      background-color: #12a454;
       animation: correctAnimation 0.5s ease;
     }
 
     .tile.present {
-      background-color: #faeb66; 
+      background-color: #faeb66;
       animation: presentAnimation 0.5s ease;
     }
 
@@ -90,6 +90,18 @@
       font-size: 18px;
       color: white;
       cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .key.correct {
+      background-color: #12a454;
+      color: white;
+    }
+
+    .key.disabled {
+      background-color: #696969;
+      color: #cccccc;
+      cursor: not-allowed;
     }
 
     .key.wide {
@@ -98,7 +110,7 @@
     }
 
     .key#backspace {
-      grid-column: span 2; /* Occupy two columns on desktop */
+      grid-column: span 2;
     }
 
     button {
@@ -112,7 +124,18 @@
       cursor: pointer;
     }
 
-    /* Media Queries for Mobile Devices */
+    #message {
+      margin-top: 20px;
+      font-size: 24px;
+      text-align: center;
+      display: none;
+    }
+
+    #counter {
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
     @media (max-width: 768px) {
       .board {
         grid-template-columns: repeat(5, 60px);
@@ -142,12 +165,12 @@
       }
 
       .key#backspace {
-        grid-column: span 2; /* Occupy two columns on mobile */
+        grid-column: span 2;
         width: 70px;
       }
 
       .key#enter {
-        grid-column: span 2; /* Adjust ENTER key size on mobile */
+        grid-column: span 2;
         width: 70px;
       }
     }
@@ -181,12 +204,12 @@
       }
 
       .key#backspace {
-        grid-column: span 2; /* Occupy two columns on mobile */
+        grid-column: span 2;
         width: 60px;
       }
 
       .key#enter {
-        grid-column: span 2; /* Adjust ENTER key size on mobile */
+        grid-column: span 2;
         width: 60px;
       }
     }
@@ -195,6 +218,7 @@
 <body>
   <div class="container">
     <h1>Termo - by ArthurDev</h1>
+    <div id="counter">Sequência correta: 0</div>
     <div class="board" id="board"></div>
     <div class="keyboard" id="keyboard">
       <!-- Teclas A-Z -->
@@ -230,11 +254,12 @@
       <div class="key">M</div>
       <div class="key wide" id="enter">ENTER</div>
     </div>
+    <div id="message"></div>
   </div>
 
   <script>
-  const words = [
-    'AMIGO', 'CARRO', 'CASAS', 'FELIZ', 'TRABO', 'BOMBA', 'CALDO', 'CESTA', 'FOCAS', 'GOLPE',
+    const words = [
+      'AMIGO', 'CARRO', 'CASAS', 'FELIZ', 'TRABO', 'BOMBA', 'CALDO', 'CESTA', 'FOCAS', 'GOLPE',
       'HORAS', 'JOGAR', 'LAMPE', 'MUNDO', 'NOTAS', 'PASTA', 'QUERO', 'ROCHA', 'SALDO', 'TEMPO',
       'URANO', 'VALOR', 'XAMPU', 'ZEBRA', 'VINHO', 'RANCA', 'MACAS', 'ABRIR', 'CELTA', 'FATOR',
       'GRAMA', 'LIGAR', 'NOBRE', 'RUMOR', 'VIRAR', 'RAIOS', 'VISTA', 'SORTE', 'CREME', 'FACAS',
@@ -266,93 +291,134 @@
       'JOGAR', 'LIVRE', 'MAPAS', 'NINHA', 'POTRE', 'RITMO', 'SALVA', 'TEXTO', 'VOILA', 'XAXIM',
       'ALBA', 'CHAVE', 'DECO', 'FAIXA', 'GALE', 'MASTO', 'NUNCA', 'PERDE', 'QUANT', 'RATOS',
       'SANGR', 'TERRA', 'UNICO', 'VALOR', 'XAXIM', 'ZINCO',
-  ];
+    ];
+    let word = words[Math.floor(Math.random() * words.length)];
+    const maxAttempts = 5;
+    let currentAttempt = 0;
+    let currentRow = [];
+    let correctStreak = 0;
+    const board = document.getElementById('board');
+    const keyboard = document.getElementById('keyboard');
+    const messageElement = document.getElementById('message');
+    const counterElement = document.getElementById('counter');
 
-  let word = words[Math.floor(Math.random() * words.length)];
-  const maxAttempts = 5;
-  let currentAttempt = 0;
-  let currentRow = [];
-  const board = document.getElementById('board');
-  const keyboard = document.getElementById('keyboard');
-
-  function initializeBoard() {
-    board.innerHTML = '';
-    for (let i = 0; i < maxAttempts * word.length; i++) {
-      const tile = document.createElement('div');
-      tile.classList.add('tile');
-      board.appendChild(tile);
+    function initializeBoard() {
+      board.innerHTML = '';
+      messageElement.style.display = 'none';
+      for (let i = 0; i < maxAttempts * word.length; i++) {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        board.appendChild(tile);
+      }
+      currentRow = [];
     }
-  }
 
-  function handleKeyPress(key) {
-    if (currentRow.length < word.length && /^[A-Z]$/.test(key)) {
-      currentRow.push(key);
-      updateBoard();
-    } else if (key === 'BACKSPACE') {
-      currentRow.pop();
-      updateBoard();
-    } else if (key === 'ENTER') {
-      if (currentRow.length === word.length) {
-        checkAttempt();
+    function showMessage(msg) {
+      messageElement.innerHTML = msg;
+      messageElement.style.display = 'block';
+    }
+
+    function handleKeyPress(key) {
+      if (currentRow.length < word.length && /^[A-Z]$/.test(key)) {
+        currentRow.push(key);
+        updateBoard();
+      } else if (key === 'BACKSPACE' && currentRow.length > 0) {
+        currentRow.pop();
+        updateBoard();
+      } else if (key === 'ENTER' && currentRow.length === word.length) {
+        checkRow();
+      }
+    }
+
+    function updateBoard() {
+      const tiles = board.children;
+      for (let i = 0; i < word.length; i++) {
+        const index = currentAttempt * word.length + i;
+        if (currentRow[i]) {
+          tiles[index].textContent = currentRow[i];
+        } else {
+          tiles[index].textContent = '';
+        }
+      }
+    }
+
+    function checkRow() {
+      const guess = currentRow.join('');
+      const tiles = board.children;
+      const rowStart = currentAttempt * word.length;
+      const correctKeys = new Set();
+      let isCorrect = true;
+
+      for (let i = 0; i < word.length; i++) {
+        const tile = tiles[rowStart + i];
+        if (currentRow[i] === word[i]) {
+          tile.classList.add('correct');
+          correctKeys.add(currentRow[i]);
+        } else if (word.includes(currentRow[i])) {
+          tile.classList.add('present');
+          isCorrect = false;
+        } else {
+          isCorrect = false;
+        }
+      }
+
+      updateKeyboard(correctKeys);
+
+      if (isCorrect) {
+        correctStreak++;
+        counterElement.textContent = `Sequência correta: ${correctStreak}`;
+        showMessage(`Parabéns! Você acertou! A palavra era "${word}". <button onclick="resetGame()">Jogar Novamente</button>`);
+      } else if (++currentAttempt === maxAttempts) {
+        correctStreak = 0;
+        counterElement.textContent = `Sequência correta: ${correctStreak}`;
+        showMessage(`Você perdeu! A palavra era "${word}". <button onclick="resetGame()">Jogar Novamente</button>`);
+      } else {
         currentRow = [];
       }
     }
-  }
 
-  function updateBoard() {
-    const startIndex = currentAttempt * word.length;
-    for (let i = 0; i < word.length; i++) {
-      const tile = board.children[startIndex + i];
-      tile.textContent = currentRow[i] || '';
-    }
-  }
-
-  function checkAttempt() {
-    const startIndex = currentAttempt * word.length;
-    const guess = currentRow.join('');
-    const guessArray = [...guess];
-
-    for (let i = 0; i < word.length; i++) {
-      const tile = board.children[startIndex + i];
-      const letter = guessArray[i];
-
-      if (letter === word[i]) {
-        tile.classList.add('correct');
-      } else if (word.includes(letter)) {
-        tile.classList.add('present');
+    function updateKeyboard(correctKeys) {
+      for (const key of keyboard.children) {
+        if (key.classList.contains('key')) {
+          const keyValue = key.textContent;
+          if (correctKeys.has(keyValue)) {
+            key.classList.add('correct');
+          } else if (currentRow.includes(keyValue) && !correctKeys.has(keyValue)) {
+            key.classList.add('disabled');
+          }
+        }
       }
     }
 
-    currentAttempt++;
-
-    if (guess === word || currentAttempt >= maxAttempts) {
-      alert(`Você ${guess === word ? 'venceu' : 'perdeu'}! A palavra era "${word}".`);
+    function resetGame() {
       word = words[Math.floor(Math.random() * words.length)];
       currentAttempt = 0;
-      initializeBoard();
       currentRow = [];
+      initializeBoard();
+      updateKeyboardReset();
     }
-  }
 
-  keyboard.addEventListener('click', function (event) {
-    const key = event.target.textContent.trim(); // Remove espaços em branco
-    if (event.target.classList.contains('key')) {
-      handleKeyPress(key);
+    function updateKeyboardReset() {
+      for (const key of keyboard.children) {
+        key.classList.remove('correct', 'disabled');
+      }
     }
-  });
 
-  window.addEventListener('keydown', function (event) {
-    let key = event.key.toUpperCase();
-    if (key === 'BACKSPACE') {
-      handleKeyPress('BACKSPACE');
-    } else if (key === 'ENTER') {
-      handleKeyPress('ENTER');
-    } else if (/^[A-Z]$/.test(key)) {
-      handleKeyPress(key);
-    }
-  });
+    keyboard.addEventListener('click', (e) => {
+      if (e.target.classList.contains('key')) {
+        const key = e.target.textContent;
+        handleKeyPress(key);
+      }
+    });
 
-  initializeBoard();
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      if (key === 'BACKSPACE' || key === 'ENTER' || /^[A-Z]$/.test(key)) {
+        handleKeyPress(key);
+      }
+    });
+
+    initializeBoard();
   </script>
 </body>
 </html>
