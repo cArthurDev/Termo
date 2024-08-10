@@ -29,6 +29,7 @@
       grid-template-columns: repeat(5, 80px);
       grid-template-rows: repeat(6, 80px);
       grid-gap: 10px;
+      margin-bottom: 20px;
     }
 
     .tile {
@@ -69,6 +70,33 @@
       100% { transform: rotate(0deg); }
     }
 
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      grid-gap: 5px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .key {
+      width: 40px;
+      height: 40px;
+      background-color: #3c3737;
+      border: 2px solid #000000;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .key.wide {
+      grid-column: span 2;
+      width: 85px;
+    }
+
     button {
       margin-top: 10px;
       padding: 10px 20px;
@@ -85,6 +113,40 @@
   <div class="container">
     <h1>Termo</h1>
     <div class="board" id="board"></div>
+    <div class="keyboard" id="keyboard">
+      <!-- Teclas A-Z -->
+      <div class="key">Q</div>
+      <div class="key">W</div>
+      <div class="key">E</div>
+      <div class="key">R</div>
+      <div class="key">T</div>
+      <div class="key">Y</div>
+      <div class="key">U</div>
+      <div class="key">I</div>
+      <div class="key">O</div>
+      <div class="key">P</div>
+      
+      <div class="key">A</div>
+      <div class="key">S</div>
+      <div class="key">D</div>
+      <div class="key">F</div>
+      <div class="key">G</div>
+      <div class="key">H</div>
+      <div class="key">J</div>
+      <div class="key">K</div>
+      <div class="key">L</div>
+
+      <div class="key wide" id="backspace">⌫</div>
+
+      <div class="key">Z</div>
+      <div class="key">X</div>
+      <div class="key">C</div>
+      <div class="key">V</div>
+      <div class="key">B</div>
+      <div class="key">N</div>
+      <div class="key">M</div>
+      <div class="key wide" id="enter">ENTER</div>
+    </div>
   </div>
 
   <script>
@@ -109,126 +171,112 @@
     'NAVAL', 'PARTE', 'RODAS', 'TRAMA', 'VORAZ', 'EXTRA', 'FOTOS', 'GRANA', 'LERAM', 'NERVO',
     'FALAR', 'SONHO', 'GOSTA', 'FERRO', 'LEVAR', 'TIGRE', 'VISTA', 'TABEL', 'PRETA', 'ESCOL',
     'RUBRO', 'ZOMBA', 'RANCA', 'TRAVA', 'GOLFE', 'RADAR', 'CASAL', 'LAMPE', 'MACRO', 'NEVEA',
-    'FICAR', 'BRAVO', 'JURAR', 'LOUCA', 'VAGAS', 'CELOS', 'MARCA', 'SONDA', 'CAUSA', 'TROCA'
+    'FICAR', 'BRAVO', 'JURAR', 'LOUCA', 'VAGAS', 'VOLEI', 'DANOS', 'FLUIR', 'RAZES', 'TEMER',
+    'ZEBRA', 'ARARA', 'VELHO', 'XADRE', 'ZONAS', 'CEGOA', 'ALTAR', 'COBRA', 'DUNAS', 'FERIR',
+    'LUXOS', 'MORRO', 'NINJA', 'PAZES', 'RESPE', 'SENDA', 'TIROU', 'VIGIA', 'ZUMBO', 'DOIDO',
+    'GELAR', 'FRUTA', 'GUIA', 'BRACO', 'VIOLA', 'TITULO', 'ESCOLA', 'CENAS', 'CUSTO', 'FOMOS',
+    'SALTO', 'RUIM', 'PRECO', 'TERNO', 'SORVE', 'NUTRA', 'DESCE', 'NOBRE', 'VARIA', 'SENTA',
+    'LUAIS', 'FAZER', 'MOSCA', 'ESTAR', 'GENTE', 'HABIT', 'LINHA', 'MONDA', 'NOTAR', 'PARTE',
+    'RIMAS', 'TALAO', 'UNIRAM', 'VIDRA', 'JOGAR', 'TREVO', 'XAMPU', 'LIMPO', 'VENTE', 'PELIC',
+    'TELHA', 'UNIDO', 'GOLFE', 'CESTA', 'ZANGU', 'RODAR', 'CRISE', 'RUMOR', 'TIROS', 'VISOR',
+    'TENDA', 'GRUTA', 'RISCA', 'MACOS', 'VAIRO', 'CELSO', 'RAMAL', 'FOGOS', 'RAIAR', 'SALDO',
+    'MUSGO', 'BENTO', 'CARRO', 'COPOS', 'TOCHA', 'DUPLO', 'GRITO', 'VOAR', 'SABIA', 'REUNI',
+    'VITRO', 'CHEIA', 'FARPA', 'LINHA', 'CREME', 'TROMA', 'ZUMBA', 'SOUBE', 'VOZES', 'DADOA',
+    'MACIS', 'JUNTA', 'FEMUR', 'CUMAR', 'LAMAR', 'FALSO', 'NODAL', 'TRAMA', 'ALTOS', 'BATEL',
+    'CARNE', 'FACIL', 'GANHA', 'HONRA', 'JUMAR', 'LAMAS', 'MIRRA', 'NEURA', 'PELAR', 'RAPAZ',
+    'SELVA', 'TELHA', 'VIDRA', 'ABANA', 'ANIMA', 'BINDA', 'CARNE', 'CRAVA', 'DUBRO', 'FACAS',
+    'GEADA', 'HUMOR', 'LABIA', 'MEIOS', 'NINHO', 'OSTRA', 'PEDRA', 'ROCAR', 'SANHA', 'VIANA',
+    'ABREM', 'BOLSO', 'CERNE', 'DANCO', 'FLUIR', 'GUIAS', 'LUXOS', 'NINJA', 'PREGO', 'SALVA',
+    'TENOR', 'ZURRA', 'ALTAS', 'CASAL', 'FACAS', 'NEVOU', 'VIGOR', 'VARAS', 'RUMOR', 'SEIOS',
+    'CELTA', 'VITRO', 'TELAS', 'ZUMBI', 'SONHO', 'FALAM', 'FEITO', 'FRUTA', 'GARRA', 'LENTO',
+    'MORTE', 'PADRE', 'RAMPA', 'SONDA', 'VIDRA', 'ZONAL', 'TROVA', 'XAMPZ', 'UNICO', 'VELHO',
+    'ALBIA', 'BUNDA', 'COSTA', 'FERRO', 'LUZES', 'NOSSO', 'RAMPA', 'TALAO', 'VELHO', 'SANTO',
+    'CANTO', 'FONTE', 'GRAMA', 'LITRO', 'NOTAS', 'PADRE', 'TETRA', 'VEZES', 'XAMPA', 'VAGAO',
+    'ALADA', 'CARRO', 'DICAS', 'FRUTA', 'LITOR', 'MURAL', 'POUCA', 'RAPTO', 'SERVO', 'VENTO',
+    'XELIA', 'GOLFO', 'TRINO', 'VAZIO', 'HORDA', 'FOBIA', 'LANDA', 'TOCAR', 'XAMPY', 'ZILDA'
   ];
 
-    let word = getRandomWord(); 
-    let currentRow = 0;
-    let currentCol = 0;
-    let currentWord = '';
+  let word = words[Math.floor(Math.random() * words.length)];
+  const maxAttempts = 5;
+  let currentAttempt = 0;
+  let currentRow = [];
+  const board = document.getElementById('board');
+  const keyboard = document.getElementById('keyboard');
 
-    const board = document.getElementById('board');
+  function initializeBoard() {
+    board.innerHTML = '';
+    for (let i = 0; i < maxAttempts * word.length; i++) {
+      const tile = document.createElement('div');
+      tile.classList.add('tile');
+      board.appendChild(tile);
+    }
+  }
 
-    function createBoard() {
-      board.innerHTML = ''; 
-      for (let i = 0; i < 6; i++) {
-        for (let j = 0; j < 5; j++) {
-          const tile = document.createElement('div');
-          tile.classList.add('tile');
-          tile.dataset.row = i;
-          tile.dataset.col = j;
-          board.appendChild(tile);
-        }
+  function handleKeyPress(key) {
+    if (currentRow.length < word.length && /^[A-Z]$/.test(key)) {
+      currentRow.push(key);
+      updateBoard();
+    } else if (key === 'BACKSPACE') {
+      currentRow.pop();
+      updateBoard();
+    } else if (key === 'ENTER') {
+      if (currentRow.length === word.length) {
+        checkAttempt();
+        currentRow = [];
+      }
+    }
+  }
+
+  function updateBoard() {
+    const startIndex = currentAttempt * word.length;
+    for (let i = 0; i < word.length; i++) {
+      const tile = board.children[startIndex + i];
+      tile.textContent = currentRow[i] || '';
+    }
+  }
+
+  function checkAttempt() {
+    const startIndex = currentAttempt * word.length;
+    const guess = currentRow.join('');
+    const guessArray = [...guess];
+
+    for (let i = 0; i < word.length; i++) {
+      const tile = board.children[startIndex + i];
+      const letter = guessArray[i];
+
+      if (letter === word[i]) {
+        tile.classList.add('correct');
+      } else if (word.includes(letter)) {
+        tile.classList.add('present');
       }
     }
 
-    createBoard();
+    currentAttempt++;
 
-    function getRandomWord() {
-      const randomIndex = Math.floor(Math.random() * words.length);
-      return words[randomIndex];
+    if (guess === word || currentAttempt >= maxAttempts) {
+      alert(`Você ${guess === word ? 'venceu' : 'perdeu'}! A palavra era "${word}".`);
+      word = words[Math.floor(Math.random() * words.length)];
+      currentAttempt = 0;
+      initializeBoard();
+      currentRow = [];
     }
+  }
 
-    document.addEventListener('keydown', (event) => {
-      const key = event.key.toUpperCase();
-
-      if (key === 'ENTER') {
-        checkWord();
-      } else if (key === 'BACKSPACE') {
-        if (currentCol > 0) {
-          currentCol--;
-          const tile = getTile(currentRow, currentCol);
-          tile.textContent = '';
-          currentWord = currentWord.slice(0, -1);
-        }
-      } else if (/^[A-Z]$/.test(key)) {
-        if (currentCol < 5) {
-          const tile = getTile(currentRow, currentCol);
-          tile.textContent = key;
-          currentWord += key;
-          currentCol++;
-        }
-      }
-    });
-
-    function getTile(row, col) {
-      return board.querySelector(`.tile[data-row="${row}"][data-col="${col}"]`);
+  keyboard.addEventListener('click', function (event) {
+    if (event.target.classList.contains('key')) {
+      const key = event.target.textContent;
+      handleKeyPress(key);
     }
+  });
 
-    function checkWord() {
-      if (currentWord.length !== 5) {
-        return;
-      }
-
-      let isCorrect = true;
-      let letterCounts = {};
-
-      for (let i = 0; i < word.length; i++) {
-        const letter = word[i];
-        letterCounts[letter] = (letterCounts[letter] || 0) + 1;
-      }
-
-      for (let i = 0; i < 5; i++) {
-        const tile = getTile(currentRow, i);
-        const letter = currentWord[i];
-
-        if (letter === word[i]) {
-          tile.classList.add('correct');
-          letterCounts[letter]--;
-        }
-      }
-
-      setTimeout(() => {
-        for (let i = 0; i < 5; i++) {
-          const tile = getTile(currentRow, i);
-          const letter = currentWord[i];
-
-          if (tile.classList.contains('correct')) {
-            continue;
-          } else if (word.includes(letter) && letterCounts[letter] > 0) {
-            tile.classList.add('present');
-            letterCounts[letter]--;
-            isCorrect = false;
-          } else {
-            tile.classList.add('disabled');
-            isCorrect = false;
-          }
-        }
-
-        setTimeout(() => {
-          if (isCorrect) {
-            alert('Parabéns, você acertou!');
-            resetGame();
-          } else if (currentRow >= 5) {
-            alert(`Você perdeu! A palavra correta era "${word}".`);
-            resetGame();
-          } else {
-            currentRow++;
-            currentCol = 0;
-            currentWord = '';
-          }
-
-        }, 500);
-      }, 500);
+  window.addEventListener('keydown', function (event) {
+    let key = event.key.toUpperCase();
+    if (key === 'BACKSPACE' || key === 'ENTER' || /^[A-Z]$/.test(key)) {
+      handleKeyPress(key);
     }
+  });
 
-    function resetGame() {
-      currentRow = 0;
-      currentCol = 0;
-      currentWord = '';
-      word = getRandomWord();
-      createBoard();
-    }
+  initializeBoard();
   </script>
 </body>
 </html>
